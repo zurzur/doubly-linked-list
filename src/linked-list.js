@@ -3,29 +3,24 @@ const Node = require('./node');
 class LinkedList {
     constructor() {
         this.length = 0;
-        this._head = new Node();
+        let initNode = new Node();
+        this._tail = initNode;
+        this._head = initNode;
+        this._head.next = this._tail;
+        this._tail.prev = this._head;
     }
 
     append(data) {
         if (this.length === 0) {
-            var currNode = new Node(data);
-            this._head = currNode;
-            this._tail = currNode;
-            this._head.next = currNode;
-            this._tail.prev = currNode;
-        } else if (this.length === 1){ 
-            var newNode = new Node(data);
-            this._head.next = newNode;
-            this._tail = newNode;
-            this._tail.prev = this._head;
+            this._head.data = data;
         } else {
-            var newNode = new Node(data);
-            var currNode = this._tail;
-            currNode.next = newNode;
-            this._tail = newNode;
-            this._tail.prev = currNode;
-        } 
+        let prevTail = this._tail;
+        this._tail = new Node(data);
+        prevTail.next = this._tail;
+        this._tail.prev = prevTail;
+    }
         this.length += 1;
+        return this;
     }
 
     head() {
@@ -37,65 +32,75 @@ class LinkedList {
     }
 
     at(index) {
-        if (index <= this.length){
-        var currNode = this._head;
-        for (var i = 0; i < index; i++) {
+        
+        let currNode = this._head;
+        for (let i = 0; i < index; i++) {
             currNode = currNode.next;
         }
-        if (currNode !== null) return currNode.data;
-    }
+        return currNode.data;
+           
     }
 
     insertAt(index, data) {
-        if (index <= this.length) {
-        var newNode = new Node(data);
-        var currNode = this._head;
-        for ( var i = 0; i < index; i++){
+        let currNode = this._head;
+        for (let i = 0; i < index; i++) {
             currNode = currNode.next;
         }
-        currNode.prev.next = newNode;
-        newNode.prev = currNode.prev;
-        newNode.next = currNode;
-        this.length += 1;
-        }
+        currNode.data = data;        
+        return this;
     }
 
     isEmpty() {
-        if (this.length === 0) return true;
-        else return false;
+        return (this.length === 0) ? true : false;
     }
 
     clear() {
-    this.length = 0;
-    this._head = new Node();
-    this._tail = this._head;        
+        this.length = 0;
+        let initNode = new Node();
+        this._tail = initNode;
+        this._head = initNode;
+        this._head.next = this._tail;
+        this._tail.prev = this._head;        
+        return this;
     }
 
     deleteAt(index) {
-        var currNode = this._head;
-        for (var i = 0; i < index; i++) {
+        let currNode = this._head;
+        for (let i = 0; i < index; i++) {
             currNode = currNode.next;
-            }
-        if (i === index) {
-            currNode.prev.next = currNode.next;
-            currNode.next.prev = currNode.prev;
-            currNode.next = null;
-            currNode.prev = null;
-            this.length -= 1;
         }
-        
+        currNode.prev.next = currNode.next;
+        currNode.next.prev = currNode.prev;        
+        return this;
     }
 
-    reverse() {}
+    reverse() {
+        let currNode = this._tail;
 
-    indexOf(data) {
-        var currNode = this._head;
-        var i = 0
-        for ( i; i < this.length && currNode.data !== data; i++) {
+        for (let i = 0; i<=this.length; i++) {
+            let oldCurrNode = currNode;
+            currNode.next = oldCurrNode.prev;
+            currNode.prev = oldCurrNode.next;
             currNode = currNode.next;
         } 
-        if (currNode.data === data) return i;
-        else return -1;
+        let oldHead = currNode;
+        let oldTail = this._tail;
+        this._head = oldTail;
+        this._tail = oldHead;        
+        return this;
+    }
+
+    indexOf(data) {
+        let currNode = this._head;
+        let index = 0;
+
+        while ((currNode.data !== data)&&(currNode != this._tail)) {
+            currNode = currNode.next;
+            index += 1;
+        } 
+
+        return currNode.data === data ? index : -1;
+
     }
 }
 
