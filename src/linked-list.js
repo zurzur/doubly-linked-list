@@ -43,10 +43,16 @@ class LinkedList {
 
     insertAt(index, data) {
         let currNode = this._head;
+        
         for (let i = 0; i < index; i++) {
             currNode = currNode.next;
         }
-        currNode.data = data;        
+        
+        let newNode = new Node(data, currNode.prev, currNode);
+        
+        currNode.prev.next = newNode;
+        currNode.prev = newNode; 
+        this.length += 1;         
         return this;
     }
 
